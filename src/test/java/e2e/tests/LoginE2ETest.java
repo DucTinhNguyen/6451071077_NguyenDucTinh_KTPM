@@ -151,6 +151,15 @@ class LoginE2ETest extends BaseTest {
         assertTrue(loginPage.getCurrentUrl().contains("accounts.google.com"));
     }
 
+    @Test
+    @DisplayName("TC11 - Mở chức năng quên mật khẩu")
+    void tc11_forgotPassword() {
+        loginPage.clickForgotPassword();
+        loginPage.waitForUrlContains("/Login/GetPass");
+        assertTrue(loginPage.getCurrentUrl().contains("/Login/GetPass"));
+        assertTrue(loginPage.isForgotPasswordFormDisplayed(), "Phải có ô Mã bảo mật, Email và nút Cập nhật");
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
