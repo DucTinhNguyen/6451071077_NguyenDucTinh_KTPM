@@ -142,6 +142,15 @@ class LoginE2ETest extends BaseTest {
                 "Không chọn ghi nhớ thì không nên có cookie xác thực có thời hạn");
     }
 
+    @Test
+    @DisplayName("TC10 - Đăng nhập bằng e-mail UTC")
+    void tc10_loginWithUtcEmail() {
+        assertTrue(loginPage.getEmailUtcHref().startsWith("https://accounts.google.com/"));
+        loginPage.clickEmailUtcLink();
+        loginPage.waitForUrlContains("accounts.google.com");
+        assertTrue(loginPage.getCurrentUrl().contains("accounts.google.com"));
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
