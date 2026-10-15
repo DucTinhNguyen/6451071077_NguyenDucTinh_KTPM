@@ -224,6 +224,22 @@ class LoginE2ETest extends BaseTest {
 
     // ===================== TC17 - TC20 (bổ sung) =====================
 
+    @Test
+    @DisplayName("TC17 - Mật khẩu luôn bị che: không có nút ẩn/hiện, vẫn che sau khi submit lỗi")
+    void tc17_passwordStaysMaskedNoToggle() {
+        // Đã xác minh DOM: trang không có nút ẩn/hiện mật khẩu nên kiểm tra hành vi thực tế
+        assertFalse(loginPage.hasPasswordToggle(), "Giao diện hiện tại không có nút toggle mật khẩu");
+        loginPage.enterPassword("Abc@12345");
+        loginPage.focusUsername();
+        assertEquals("password", loginPage.getPasswordType(), "Mất focus không được làm lộ mật khẩu");
+
+        loginPage.enterUsername("sai_user_" + System.currentTimeMillis());
+        loginPage.clickLogin();
+        loginPage.waitUntilErrorVisible();
+        assertEquals("password", loginPage.getPasswordType(), "Sau submit lỗi ô mật khẩu vẫn là type=password");
+        assertTrue(loginPage.getPasswordValue().isEmpty(), "Mật khẩu đã nhập không được điền lại vào form");
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
