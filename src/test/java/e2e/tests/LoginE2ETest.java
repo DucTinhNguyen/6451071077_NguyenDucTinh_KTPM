@@ -257,6 +257,24 @@ class LoginE2ETest extends BaseTest {
         assertEquals(MSG_NO_USERNAME, loginPage.getErrorMessage());
     }
 
+    @Test
+    @DisplayName("TC19 - Thứ tự Tab và Focus bằng bàn phím")
+    void tc19_tabOrderAndFocus() {
+        loginPage.focusUsername();
+        assertEquals("username", loginPage.getFocusedElementKey());
+        // checkbox gốc bị ẩn nên không nhận focus
+        List<String> expected = List.of("userpwd", "button", "submit_login", "/Login/GetPass");
+        List<String> actual = new java.util.ArrayList<>();
+        for (int i = 0; i < expected.size(); i++) {
+            loginPage.pressTab();
+            actual.add(loginPage.getFocusedElementKey());
+        }
+        assertEquals(expected, actual, "Thứ tự Tab: password -> email UTC -> Đăng nhập -> Quên mật khẩu");
+
+        loginPage.pressShiftTab();
+        assertEquals("submit_login", loginPage.getFocusedElementKey(), "Shift+Tab quay lại nút Đăng nhập");
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
