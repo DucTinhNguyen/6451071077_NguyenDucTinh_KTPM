@@ -59,6 +59,15 @@ class LoginE2ETest extends BaseTest {
         assertFalse(loginPage.getCurrentUrl().contains("/Login"), "URL không còn là trang Login");
     }
 
+    @Test
+    @DisplayName("TC2 - Để trống cả username và password")
+    void tc02_emptyBoth() {
+        loginPage.clickLogin();
+        loginPage.waitUntilErrorVisible();
+        assertEquals(MSG_NO_USERNAME, loginPage.getErrorMessage());
+        assertTrue(loginPage.isOnLoginPage());
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
