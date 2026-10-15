@@ -160,6 +160,22 @@ class LoginE2ETest extends BaseTest {
         assertTrue(loginPage.isForgotPasswordFormDisplayed(), "Phải có ô Mã bảo mật, Email và nút Cập nhật");
     }
 
+    @Test
+    @DisplayName("TC12 - Nhấn Enter để đăng nhập")
+    void tc12_enterKeySubmits() {
+        loginPage.enterUsername("someuser");
+        loginPage.enterPassword("");
+        loginPage.submitByEnterInUsername();
+        loginPage.waitUntilErrorVisible();
+        assertEquals(MSG_NO_PASSWORD, loginPage.getErrorMessage(), "Enter phải gửi form như bấm nút");
+
+        loginPage.enterUsername("sai_user_" + System.currentTimeMillis());
+        loginPage.enterPassword("sai_pass");
+        loginPage.submitByEnterInPassword();
+        loginPage.waitUntilErrorVisible();
+        assertEquals(MSG_BAD_CREDENTIALS, loginPage.getErrorMessage());
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
