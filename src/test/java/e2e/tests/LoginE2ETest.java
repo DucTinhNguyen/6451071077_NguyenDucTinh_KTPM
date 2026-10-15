@@ -240,6 +240,23 @@ class LoginE2ETest extends BaseTest {
         assertTrue(loginPage.getPasswordValue().isEmpty(), "Mật khẩu đã nhập không được điền lại vào form");
     }
 
+    @Test
+    @DisplayName("TC18 - Responsive trên màn hình Mobile (375x667)")
+    void tc18_mobileResponsive() {
+        Map<String, Object> metrics = Map.of("width", 375, "height", 667,
+                "deviceScaleFactor", 2, "mobile", true);
+        ((ChromeDriver) driver).executeCdpCommand("Emulation.setDeviceMetricsOverride", metrics);
+        loginPage.open();
+        assertAll(
+                () -> assertTrue(loginPage.isLoginFormDisplayed(), "Form đăng nhập vẫn hiển thị"),
+                () -> assertTrue(loginPage.isSubmitWithinViewport(), "Ô nhập và nút nằm trong chiều rộng màn hình"),
+                () -> assertFalse(loginPage.hasHorizontalScroll(), "Không phát sinh thanh cuộn ngang"));
+        // form vẫn dùng được trên mobile
+        loginPage.clickLogin();
+        loginPage.waitUntilErrorVisible();
+        assertEquals(MSG_NO_USERNAME, loginPage.getErrorMessage());
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
