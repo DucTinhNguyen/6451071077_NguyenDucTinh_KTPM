@@ -50,6 +50,15 @@ class LoginE2ETest extends BaseTest {
 
     // ===================== TC1 - TC16 (theo bảng test case đã có) =====================
 
+    @Test
+    @DisplayName("TC1 - Đăng nhập thành công")
+    void tc01_loginSuccess() {
+        requireCredentials();
+        loginPage.login(VALID_USER, VALID_PASS);
+        assertTrue(new DashboardPage(driver).isLoaded(), "Phải rời trang đăng nhập sau khi đăng nhập hợp lệ");
+        assertFalse(loginPage.getCurrentUrl().contains("/Login"), "URL không còn là trang Login");
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
