@@ -131,6 +131,17 @@ class LoginE2ETest extends BaseTest {
                 "Khi chọn ghi nhớ, hệ thống nên tạo cookie có thời hạn (persistent)");
     }
 
+    @Test
+    @DisplayName("TC9 - Không chọn 'Giữ tôi luôn đăng nhập'")
+    void tc09_keepLoggedInUnchecked() {
+        requireCredentials();
+        assertFalse(loginPage.isPersistentChecked(), "Mặc định checkbox không được chọn");
+        loginPage.login(VALID_USER, VALID_PASS);
+        assertTrue(new DashboardPage(driver).isLoaded());
+        assertEquals(0, persistentCookies().size(),
+                "Không chọn ghi nhớ thì không nên có cookie xác thực có thời hạn");
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
