@@ -88,6 +88,15 @@ class LoginE2ETest extends BaseTest {
         assertTrue(loginPage.isOnLoginPage());
     }
 
+    @Test
+    @DisplayName("TC5 - Nhập sai username")
+    void tc05_wrongUsername() {
+        loginPage.login("khong_ton_tai_" + System.currentTimeMillis(), "Abc@12345");
+        loginPage.waitUntilErrorVisible();
+        assertEquals(MSG_BAD_CREDENTIALS, loginPage.getErrorMessage());
+        assertTrue(loginPage.isOnLoginPage());
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
