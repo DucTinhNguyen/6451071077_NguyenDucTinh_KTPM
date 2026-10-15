@@ -107,6 +107,18 @@ class LoginE2ETest extends BaseTest {
         assertTrue(loginPage.isOnLoginPage());
     }
 
+    @Test
+    @DisplayName("TC7 - Sai cả username và password")
+    void tc07_wrongBoth() {
+        loginPage.login("sai_user_" + System.currentTimeMillis(), "sai_pass");
+        loginPage.waitUntilErrorVisible();
+        String message = loginPage.getErrorMessage();
+        assertEquals(MSG_BAD_CREDENTIALS, message);
+        // thông báo không được cho biết cụ thể trường nào sai
+        assertFalse(message.toLowerCase().contains("không tồn tại"));
+        assertTrue(loginPage.isOnLoginPage());
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
