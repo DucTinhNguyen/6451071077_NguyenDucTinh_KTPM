@@ -275,6 +275,20 @@ class LoginE2ETest extends BaseTest {
         assertEquals("submit_login", loginPage.getFocusedElementKey(), "Shift+Tab quay lại nút Đăng nhập");
     }
 
+    @Test
+    @DisplayName("TC20 - Banner không điều hướng, các liên kết chân trang hợp lệ")
+    void tc20_bannerAndFooterLinks() {
+        String before = loginPage.getCurrentUrl();
+        assertTrue(loginPage.isBannerDisplayed(), "Ảnh banner và tiêu đề phải hiển thị");
+        assertEquals(0, loginPage.countLinksWrappingBanner(), "Banner không phải liên kết");
+        loginPage.clickBanner();
+        assertEquals(before, loginPage.getCurrentUrl(), "Click banner không được điều hướng");
+        assertTrue(loginPage.isLoginFormDisplayed());
+        assertAll(
+                () -> assertTrue(loginPage.getFooterHelpHref().startsWith("http://hotrokythuat.utc.edu.vn")),
+                () -> assertEquals("mailto:hotrokythuat@utc.edu.vn", loginPage.getFooterFeedbackHref()));
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
