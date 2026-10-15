@@ -192,6 +192,15 @@ class LoginE2ETest extends BaseTest {
         }
     }
 
+    @Test
+    @DisplayName("TC14 - Password chứa khoảng trắng")
+    void tc14_passwordWithSpaces() {
+        loginPage.login("sai_user_" + System.currentTimeMillis(), "  Abc@12345  ");
+        loginPage.waitUntilErrorVisible();
+        assertEquals(MSG_BAD_CREDENTIALS, loginPage.getErrorMessage());
+        assertTrue(loginPage.isOnLoginPage());
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
