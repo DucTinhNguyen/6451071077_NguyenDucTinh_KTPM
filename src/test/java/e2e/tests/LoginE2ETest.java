@@ -176,6 +176,22 @@ class LoginE2ETest extends BaseTest {
         assertEquals(MSG_BAD_CREDENTIALS, loginPage.getErrorMessage());
     }
 
+    @Test
+    @DisplayName("TC13 - Username chứa khoảng trắng đầu/cuối")
+    void tc13_usernameWithSpaces() {
+        if (VALID_USER.isBlank()) {
+            loginPage.login("  someuser  ", "Abc@12345");
+            loginPage.waitUntilErrorVisible();
+            assertEquals(MSG_BAD_CREDENTIALS, loginPage.getErrorMessage());
+            assertTrue(loginPage.isOnLoginPage());
+        } else {
+            loginPage.login("  " + VALID_USER + "  ", VALID_PASS);
+            // hệ thống nhất quán: hoặc chuẩn hóa (vào hệ thống) hoặc từ chối rõ ràng
+            boolean loggedIn = new DashboardPage(driver).isLoaded();
+            assertTrue(loggedIn || loginPage.isErrorDisplayed(), "Phải có kết quả xác định, không lỗi hệ thống");
+        }
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
