@@ -119,6 +119,18 @@ class LoginE2ETest extends BaseTest {
         assertTrue(loginPage.isOnLoginPage());
     }
 
+    @Test
+    @DisplayName("TC8 - Chọn 'Giữ tôi luôn đăng nhập' rồi đăng nhập")
+    void tc08_keepLoggedInChecked() {
+        requireCredentials();
+        loginPage.clickPersistentCheckbox();
+        assertTrue(loginPage.isPersistentChecked(), "Checkbox phải ở trạng thái được chọn");
+        loginPage.login(VALID_USER, VALID_PASS);
+        assertTrue(new DashboardPage(driver).isLoaded());
+        assertTrue(persistentCookies().size() > 0,
+                "Khi chọn ghi nhớ, hệ thống nên tạo cookie có thời hạn (persistent)");
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
