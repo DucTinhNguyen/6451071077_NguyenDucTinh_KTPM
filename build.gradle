@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '4.3.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.35.0'
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    // Mặc định headless=true. Tắt bằng: gradlew test -Pheadless=false
+    systemProperty 'headless', project.findProperty('headless') ?: 'true'
+    systemProperty 'baseUrl', project.findProperty('baseUrl') ?: 'https://vanphongdientu.utc.edu.vn'
+    // Tài khoản hợp lệ (chỉ cho TC1, TC8, TC9, TC12...) lấy từ biến môi trường UTC_USER / UTC_PASS
+    environment 'UTC_USER', System.getenv('UTC_USER') ?: ''
+    environment 'UTC_PASS', System.getenv('UTC_PASS') ?: ''
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        showStandardStreams = false
+    }
+}
+
+allure {
+    version = '3.14.3'
+}
