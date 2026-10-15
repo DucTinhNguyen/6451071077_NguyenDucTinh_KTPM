@@ -201,6 +201,19 @@ class LoginE2ETest extends BaseTest {
         assertTrue(loginPage.isOnLoginPage());
     }
 
+    @Test
+    @DisplayName("TC15 - Kiểm tra SQL Injection")
+    void tc15_sqlInjection() {
+        loginPage.login("' OR '1'='1", "' OR '1'='1");
+        loginPage.waitUntilErrorVisible();
+        String page = driver.getPageSource().toLowerCase();
+        assertAll(
+                () -> assertEquals(MSG_BAD_CREDENTIALS, loginPage.getErrorMessage()),
+                () -> assertTrue(loginPage.isOnLoginPage(), "Không được vượt qua đăng nhập"),
+                () -> assertFalse(page.contains("sql syntax") || page.contains("sqlexception")
+                        || page.contains("ora-0") || page.contains("stack trace"), "Không lộ lỗi SQL nội bộ"));
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
