@@ -78,6 +78,16 @@ class LoginE2ETest extends BaseTest {
         assertTrue(loginPage.isOnLoginPage());
     }
 
+    @Test
+    @DisplayName("TC4 - Để trống password")
+    void tc04_emptyPassword() {
+        loginPage.enterUsername("someuser");
+        loginPage.clickLogin();
+        loginPage.waitUntilErrorVisible();
+        assertEquals(MSG_NO_PASSWORD, loginPage.getErrorMessage());
+        assertTrue(loginPage.isOnLoginPage());
+    }
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
