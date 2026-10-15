@@ -214,6 +214,16 @@ class LoginE2ETest extends BaseTest {
                         || page.contains("ora-0") || page.contains("stack trace"), "Không lộ lỗi SQL nội bộ"));
     }
 
+    @Test
+    @DisplayName("TC16 - Mật khẩu được che khi nhập")
+    void tc16_passwordMasked() {
+        loginPage.enterPassword("Abc@12345");
+        assertEquals("password", loginPage.getPasswordType());
+        assertEquals("Abc@12345", loginPage.getPasswordValue());
+    }
+
+    // ===================== TC17 - TC20 (bổ sung) =====================
+
     private Set<Cookie> persistentCookies() {
         return driver.manage().getCookies().stream()
                 .filter(c -> c.getExpiry() != null)
